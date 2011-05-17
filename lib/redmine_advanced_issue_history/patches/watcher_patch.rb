@@ -25,15 +25,8 @@ module RedmineAdvancedIssueHistory
           end
         end
 
-        def after_destroy
-          if self.watchable_type == 'Issue'
-            issue = self.watchable
-            user = User.current
-            note = "Watcher #{self.user.name} was removed"
-            journal = Journal.new(:journalized => issue, :user => user, :notes => note)
-            journal.save
-          end
-        end
+        # destroy is handled by controller patch
+        # because of in watchable plugin the destroy id done by direct sql
 
       end
     end

@@ -6,7 +6,9 @@ module RedmineAdvancedIssueHistory
 
         base.send(:include, InstanceMethods)
         base.class_eval do
-          # unloadable
+          alias_method_chain :new,     :update_history
+          alias_method_chain :destroy, :update_history
+          unloadable
           helper :journals
           include JournalsHelper   
         end
@@ -17,7 +19,7 @@ module RedmineAdvancedIssueHistory
 
       module InstanceMethods
 
-        def new
+        def new_with_update_history
           @relation = IssueRelation.new(params[:relation])
           @relation.issue_from = @issue
           if params[:relation] && m = params[:relation][:issue_to_id].to_s.match(/^#?(\d+)$/)
@@ -26,11 +28,11 @@ module RedmineAdvancedIssueHistory
           @relation.save if request.post?
 
           # ilya
-#          if @relation.errors.empty? && request.post?
-#            note = "Relation type '#{@relation.type}' to '#{@relation.issue_to}' was created"
-#            journal = Journal.new(:journalized => @issue, :user => User.current, :notes => note)
-#            journal.save
-#          end
+          if @relation.errors.empty? && request.post?
+            note = "Relation '#{@relation.type}' to '#{@relation.issue_to}' was created"
+            journal = Journal.new(:journalized => @issue, :user => User.current, :notes => note)
+            journal.save
+          end
           # /ilya
 
           respond_to do |format|
@@ -53,6 +55,39 @@ module RedmineAdvancedIssueHistory
             end
           end
         end
+
+
+        def destroy_with_update_history
+          relation = IssueRelation.find(params[:id])
+          if request.post? && @issue.relations.include?(relation)
+            relation.destroy
+
+            # ilya
+            note = "Relation '#{relation.type}' to '#{relation.issue_to}' was destroyed"
+            journal = Journal.new(:journalized => relation.issue_from, :user => User.current, :notes => note)
+            journal.save
+            # /ilya
+
+            @issue.reload
+          end
+
+          respond_to do |format|
+            format.html { redirect_to :controller => 'issues', :action => 'show', :id => @issue }
+            format.js {
+              @relations = @issue.relations.select {|r| r.other_issue(@issue) && r.other_issue(@issue).visible? }
+              render(:update) do |page| 
+                # ilya
+                @journals = @issue.journals.find(:all, :include => [:user, :details], :order => "#{Journal.table_name}.created_on ASC")
+                @journals.each_with_index {|j,i| j.indice = i+1}
+                @journals.reverse! if User.current.wants_comments_in_reverse_order?
+                page.replace_html "history", :partial => 'issues/history', :locals => { :issue => @issue, :journals => @journals }
+                # /ilya
+                page.replace_html "relations", :partial => 'issues/relations'
+              end
+            }
+          end
+        end
+
 
       end
     end
