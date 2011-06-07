@@ -6,8 +6,8 @@ Redmine::Plugin.register :redmine_advanced_issue_history do
   name 'Redmine Advanced Issue History plugin'
   author 'Ilya Nemihin'
   description 'New events store in Issue history'
-  version '0.0.2'
-  url ''
+  version '0.0.9'
+  url 'https://github.com/nemilya/redmine_advanced_issue_history'
   author_url ''
 end
 
