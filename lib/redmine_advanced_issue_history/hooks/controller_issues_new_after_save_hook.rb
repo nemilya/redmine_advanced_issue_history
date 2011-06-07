@@ -11,7 +11,7 @@ module RedmineAdvancedIssueHistory
           parent_issue = issue.parent
           user = User.current
           note = "Sub tast '#{issue}' was added"
-          journal = Journal.new(:journalized => parent_issue, :user => user, :notes => note)
+          journal = Journal.new(:journalized => parent_issue, :user => user, :notes => note, :is_system_note=> true)
           journal.save
         end
       end

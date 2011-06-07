@@ -10,7 +10,9 @@ module RedmineAdvancedIssueHistory
           alias_method_chain :destroy, :update_history
           unloadable
           helper :journals
+          helper :issues
           include JournalsHelper   
+          include IssuesHelper   
         end
       end
 
@@ -30,7 +32,7 @@ module RedmineAdvancedIssueHistory
           # ilya
           if @relation.errors.empty? && request.post?
             note = "Relation '#{@relation.type}' to '#{@relation.issue_to}' was created"
-            journal = Journal.new(:journalized => @issue, :user => User.current, :notes => note)
+            journal = Journal.new(:journalized => @issue, :user => User.current, :notes => note, :is_system_note=> true)
             journal.save
           end
           # /ilya
@@ -64,7 +66,7 @@ module RedmineAdvancedIssueHistory
 
             # ilya
             note = "Relation '#{relation.type}' to '#{relation.issue_to}' was destroyed"
-            journal = Journal.new(:journalized => relation.issue_from, :user => User.current, :notes => note)
+            journal = Journal.new(:journalized => relation.issue_from, :user => User.current, :notes => note, :is_system_note=> true)
             journal.save
             # /ilya
 

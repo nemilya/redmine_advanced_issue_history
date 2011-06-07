@@ -1,10 +1,12 @@
 require 'redmine'
 
+require 'journals_helper_patch' # history are not ediatable for system notes
+
 Redmine::Plugin.register :redmine_advanced_issue_history do
   name 'Redmine Advanced Issue History plugin'
   author 'Ilya Nemihin'
   description 'New events store in Issue history'
-  version '0.0.1'
+  version '0.0.2'
   url ''
   author_url ''
 end

@@ -1,8 +1,9 @@
 = Advanced Issue History
 
-Store in issue history event:
+Events in Issue History: 
 
-* asignment task [done]
-* adding watchers [50%, not logged when removed]
-* creation sub tasks [todo]
+* task assignment [done]
+* add/remove watchers [done]
+* new sub tasks [done]
+* system history log not editable [done]
 * email notification for all this [todo]

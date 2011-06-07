@@ -21,12 +21,12 @@ module RedmineAdvancedIssueHistory
 
           # ilya
           if request.post?
-            if @watched.respond_to? :issue
+            if @watched.class.name == 'Issue'
               issue = @watched
               user = User.current
               watcher = User.find(params[:user_id])
               note = "Watcher #{watcher.name} was removed"
-              journal = Journal.new(:journalized => issue, :user => user, :notes => note)
+              journal = Journal.new(:journalized => issue, :user => user, :notes => note, :is_system_note=> true)
               journal.save
             end
           end
