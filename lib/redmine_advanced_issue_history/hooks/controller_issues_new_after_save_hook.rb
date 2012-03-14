@@ -9,7 +9,6 @@ module RedmineAdvancedIssueHistory
       def controller_issues_edit_before_save(context={})
         issue = context[:issue]
         issue_params = context[:params][:issue]
-
         if issue.parent.present? && (issue.parent.id != issue_params[:parent_issue_id])
           note = "Sub task '#{issue}' has been removed"
           journal = Journal.new(:journalized => issue.parent, :user => User.current, :notes => note, :is_system_note => true)
