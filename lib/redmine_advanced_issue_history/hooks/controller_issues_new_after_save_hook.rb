@@ -9,13 +9,12 @@ module RedmineAdvancedIssueHistory
       def controller_issues_edit_before_save(context={})
         issue = context[:issue]
         issue_params = context[:params][:issue]
-
-        if issue.parent.present? && (issue.parent.id != issue_params[:parent_issue_id])
+        if issue.parent.present? && (issue.parent.id != issue_params[:parent_issue_id].try(:to_i))
           note = "Sub task '#{issue}' has been removed"
           journal = Journal.new(:journalized => issue.parent, :user => User.current, :notes => note, :is_system_note => true)
           journal.save
         end
-        if issue_params[:parent_issue_id].present? && (issue.parent.try(:id) != issue_params[:parent_issue_id])
+        if issue_params[:parent_issue_id].present? && (issue.parent.try(:id) != issue_params[:parent_issue_id].to_i)
           note = "Sub task '#{issue}' was added"
           journal = Journal.new(:journalized => Issue.find(issue_params[:parent_issue_id]), :user => User.current, :notes => note, :is_system_note => true)
           journal.save
