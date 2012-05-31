@@ -34,6 +34,10 @@ module RedmineAdvancedIssueHistory
             note = "Relation '#{@relation.type}' to '#{@relation.issue_to}' was created"
             journal = Journal.new(:journalized => @issue, :user => User.current, :notes => note, :is_system_note=> true)
             journal.save
+
+            note = "Relation '#{@relation.type}' to '#{@issue}' was created"
+            journal = Journal.new(:journalized => @relation.issue_to, :user => User.current, :notes => note, :is_system_note=> true)
+            journal.save
           end
           # /ilya
 
@@ -67,6 +71,10 @@ module RedmineAdvancedIssueHistory
             # ilya
             note = "Relation '#{relation.type}' to '#{relation.issue_to}' was destroyed"
             journal = Journal.new(:journalized => relation.issue_from, :user => User.current, :notes => note, :is_system_note=> true)
+            journal.save
+
+            note = "Relation '#{relation.type}' to '#{relation.issue_from}' was destroyed"
+            journal = Journal.new(:journalized => relation.issue_to, :user => User.current, :notes => note, :is_system_note=> true)
             journal.save
             # /ilya
 
