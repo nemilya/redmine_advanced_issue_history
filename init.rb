@@ -21,6 +21,7 @@ Dispatcher.to_prepare :redmine_advanced_issue_history do
     # redmine 1.2.x
     require 'redmine_advanced_issue_history/patches/issue_relations_controller_patch'
   end
+  require_dependency 'issue_relations_controller'
   IssueRelationsController.send(:include, RedmineAdvancedIssueHistory::Patches::IssueRelationsControllerPatch)
 
   require_dependency 'watcher'
