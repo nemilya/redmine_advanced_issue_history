@@ -7,3 +7,5 @@ Events in Issue History:
 * new sub tasks [done]
 * system history log not editable [done]
 * email notification for all this [todo]
+
+* compatible with Redmine version 1.4.4
